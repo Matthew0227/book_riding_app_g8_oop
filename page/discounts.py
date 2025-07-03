@@ -29,8 +29,8 @@ canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 menubar_frame = tk.Frame(root, width=916, height=41, bg="#F1DADA")
 menubar_frame.place(x=0, y=0)
 
-username_text = tk.StringVar(value=username)
-username_label = tk.Label(menubar_frame, textvariable=username_text, bg="#F1DADA",
+welcome_text = tk.StringVar(value=f"Welcome!, {username}")
+username_label = tk.Label(menubar_frame, textvariable=welcome_text, bg="#F1DADA",
                           font=("Arial", 24), anchor="w", width=16)
 username_label.place(x=7, y=0, height=41)
 
@@ -159,5 +159,18 @@ tk.Button(root, text="Apply", bg="#A24141", fg="white", font=("Arial", 14),
 # Remove Discount Button
 tk.Button(root, text="Remove Discount", bg="#A24141", fg="white", font=("Arial", 12),
           command=remove_discount).place(x=375, y=494, width=170, height=35)
+
+# Load and place icons
+student_img_raw = Image.open("pictures/student.png").resize((89, 89))
+student_img = ImageTk.PhotoImage(student_img_raw)
+canvas.create_image(204, 279, image=student_img, anchor="nw")
+
+senior_img_raw = Image.open("pictures/senior.png").resize((89, 89))
+senior_img = ImageTk.PhotoImage(senior_img_raw)
+canvas.create_image(412, 279, image=senior_img, anchor="nw")
+
+pwd_img_raw = Image.open("pictures/pwd.png").resize((89, 89))
+pwd_img = ImageTk.PhotoImage(pwd_img_raw)
+canvas.create_image(612, 279, image=pwd_img, anchor="nw")
 
 root.mainloop()

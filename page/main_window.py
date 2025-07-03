@@ -33,8 +33,8 @@ menubar_frame = tk.Frame(root, width=916, height=41, bg="#F1DADA")
 menubar_frame.place(x=0, y=0)
 
 # Username Label (left side)
-username_text = tk.StringVar(value=username)
-username_label = tk.Label(menubar_frame, textvariable=username_text, bg="#F1DADA",
+welcome_text = tk.StringVar(value=f"Welcome!, {username}")
+username_label = tk.Label(menubar_frame, textvariable=welcome_text, bg="#F1DADA",
                           font=("Arial", 24), anchor="w", width=16)
 username_label.place(x=7, y=0, height=41)
 
