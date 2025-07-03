@@ -2,6 +2,8 @@ import os
 from tkinter import messagebox
 import subprocess
 
+Discount = "None"
+
 def letters_only(username):
     return all(char.isalpha() or char.isspace() for char in username)
 
@@ -22,7 +24,7 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
         messagebox.showerror("Input Error", "Passwords do not match.")
         return
 
-    key = f"{username}_{password}"
+    key = f"{username}_{password}_{Discount}"
     file_path = f"backend/users/{key}.txt"
 
     if os.path.exists(file_path):
@@ -31,7 +33,6 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
 
     # Create user file and write initial content
     with open(file_path, "w") as file_txt:
-        file_txt.write(f"Username: {username}\n")
         file_txt.write("-------------------\n")
         file_txt.write("BOOKING HISTORY\n")
         file_txt.write("-------------------\n")
@@ -41,6 +42,7 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
     with open("backend/session.py", "w") as session_file:
             session_file.write(f'username = "{username}"\n')
             session_file.write(f'password = "{password}"\n')
+            session_file.write(f'Discount = "None"\n')
 
         # Open dashboard and close login window
     subprocess.Popen(["python", "page/main_window.py"])

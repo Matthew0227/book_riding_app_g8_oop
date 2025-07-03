@@ -1,2 +1,3 @@
-username = "Matthew"
-password = "111"
+username = "Javeniar"
+password = "123"
+discount = "student"

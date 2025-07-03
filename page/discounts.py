@@ -116,6 +116,15 @@ ttk.Radiobutton(root, text="", variable=discount_var, value="Student", style="Cu
 ttk.Radiobutton(root, text="", variable=discount_var, value="Senior", style="Custom.TRadiobutton").place(x=432, y=390, width=50, height=42)
 ttk.Radiobutton(root, text="", variable=discount_var, value="PWD", style="Custom.TRadiobutton").place(x=632, y=390, width=50, height=42)
 
+# Save to session.py
+def update_session(discount):
+    session_path = os.path.join("backend", "session.py")
+    with open(session_path, "w") as session_file:
+        session_file.write(f'username = "{username}"\n')
+        session_file.write(f'password = "{password}"\n')
+        if discount:
+            session_file.write(f'discount = "{discount.lower()}"\n')
+
 def apply_discount():
     selected = discount_var.get()
     if not selected:
@@ -128,16 +137,16 @@ def apply_discount():
         "PWD": pwd_file
     }[selected]
 
-    # If another discount is currently applied, rename it back to base
+    # Remove existing discounts
     for f in [student_file, senior_file, pwd_file]:
         if f != target_file and os.path.exists(f):
             os.rename(f, base_file)
 
-    # Only rename if it's not already applied
     if os.path.exists(base_file):
         os.rename(base_file, target_file)
 
     canvas.itemconfig(current_discount_text, text=f"Current discount: {selected}")
+    update_session(discount=selected)
     messagebox.showinfo("Success", f"{selected} discount applied.")
 
 def remove_discount():
@@ -148,6 +157,7 @@ def remove_discount():
             restored = True
     if restored:
         canvas.itemconfig(current_discount_text, text="Current discount: (none)")
+        update_session(discount=None)
         messagebox.showinfo("Removed", "Discount has been removed.")
     else:
         messagebox.showinfo("Info", "No discount is currently applied.")

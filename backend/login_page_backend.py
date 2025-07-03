@@ -17,18 +17,28 @@ def handle_login(username_entry, password_entry, root_window):
         messagebox.showerror("Input Error", "Username must contain letters only.")
         return
 
-    key = f"{username}_{password}"
-    file_path = f"backend/users/{key}.txt"
+    users_folder = "backend/users"
+    matched_file = None
+    discount = None
 
-    # Check if user file exists (account exists)
-    if os.path.exists(file_path):
+    # Look through user files
+    for file in os.listdir(users_folder):
+        if file.startswith(f"{username}_{password}"):
+            matched_file = file
+            parts = file.replace(".txt", "").split("_")
+            if len(parts) == 3:
+                discount = parts[2]  # Student, Senior, or PWD
+            break
+
+    if matched_file:
         messagebox.showinfo("Login Successful", f"Welcome back, {username}!")
-        
-        with open("backend/session.py", "w") as session_file:
+
+        # Save session info including discount
+        with open("backend/session.py", "w", encoding="utf-8") as session_file:
             session_file.write(f'username = "{username}"\n')
             session_file.write(f'password = "{password}"\n')
+            session_file.write(f'discount = "{discount}"\n')  # Will be None if no discount
 
-        # Open dashboard and close login window
         subprocess.Popen(["python", "page/main_window.py"])
         root_window.destroy()
     else:
