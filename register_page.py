@@ -11,7 +11,7 @@ root.geometry("916x571")
 root.resizable(False, False)
 
 # Background Image
-bg_image = Image.open("C:/Users/Matteoo/Downloads/v-de-leon-pureza-av.jpg")
+bg_image = Image.open("v-de-leon-pureza-av.jpg")
 bg_image = bg_image.resize((916, 571))
 bg_photo = ImageTk.PhotoImage(bg_image)
 
@@ -56,10 +56,18 @@ def toggle_password():
         password_entry.config(show="")
         toggle_btn.config(text="Hide")
 
+def toggle_password2():
+    if confirm_entry.cget("show") == "":
+        confirm_entry.config(show="*")
+        toggle_btn.config(text="Show")
+    else:
+        confirm_entry.config(show="")
+        toggle_btn.config(text="Hide")
+
 toggle_btn = tk.Button(root, text="Show", command=toggle_password, font=("Arial", 10), bg="#CE3E3E", borderwidth=0)
 canvas.create_window(320, 275, window=toggle_btn, width=40, height=43)
 
-toggle_btn = tk.Button(root, text="Show", command=toggle_password, font=("Arial", 10), bg="#CE3E3E", borderwidth=0)
+toggle_btn = tk.Button(root, text="Show", command=toggle_password2, font=("Arial", 10), bg="#CE3E3E", borderwidth=0)
 canvas.create_window(320, 365, window=toggle_btn, width=40, height=43)
 
 
