@@ -1,7 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import subprocess
-import register_page_backend
+import backend.register_page_backend
 
 
 # Main Window Setup
@@ -11,7 +11,7 @@ root.geometry("916x571")
 root.resizable(False, False)
 
 # Background Image
-bg_image = Image.open("v-de-leon-pureza-av.jpg")
+bg_image = Image.open("pictures/v-de-leon-pureza-av.jpg")
 bg_image = bg_image.resize((916, 571))
 bg_photo = ImageTk.PhotoImage(bg_image)
 
@@ -82,7 +82,7 @@ canvas.create_window(270, 420, window=login_page_label, width=150, height=24)
 
 # Register Button
 def open_dashboard():
-    register_page_backend.handle_registration(username_entry, password_entry, confirm_entry, root)
+    backend.register_page_backend.handle_registration(username_entry, password_entry, confirm_entry, root)
 
 register_button = tk.Button(
     root,

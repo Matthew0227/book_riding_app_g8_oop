@@ -1,7 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import subprocess
-import login_page_backend
+import backend.login_page_backend
 
 # Main Window Setup
 root = tk.Tk()
@@ -10,7 +10,7 @@ root.geometry("916x571")
 root.resizable(False, False)
 
 # Background Image
-bg_image = Image.open("v-de-leon-pureza-av.jpg")
+bg_image = Image.open("pictures/v-de-leon-pureza-av.jpg")
 bg_image = bg_image.resize((916, 571))
 bg_photo = ImageTk.PhotoImage(bg_image)
 
@@ -60,7 +60,7 @@ canvas.create_window(290, 313, window=create_account_label, width=107, height=24
 
 # Login Button
 def open_dashboard():
-    login_page_backend.handle_login(username_entry, password_entry, root)
+    backend.login_page_backend.handle_login(username_entry, password_entry, root)
 
 login_button = tk.Button(
     root,

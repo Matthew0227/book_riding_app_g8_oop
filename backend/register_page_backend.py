@@ -32,12 +32,17 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
 
     # Create user file and write initial content
     with open(file_path, "w") as file_txt:
+        file_txt.write(f"Username: {username}\n")
         file_txt.write("-------------------\n")
         file_txt.write("BOOKING HISTORY\n")
         file_txt.write("-------------------\n")
-        file_txt.write(f"Username: {username}\n")
 
     messagebox.showinfo("Registration Successful", f"Account created for {username}!")
 
-    main_dashboard.open_dashboard(key)
+    with open("backend/session.py", "w") as session_file:
+            session_file.write(f'username = "{username}"\n')
+            session_file.write(f'password = "{password}"\n')
+
+        # Open dashboard and close login window
+    subprocess.Popen(["python", "page/main_window.py"])
     root_window.destroy()
