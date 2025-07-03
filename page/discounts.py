@@ -75,21 +75,19 @@ canvas.create_rectangle(124, 132, 791, 539, fill="#E1DEDE", outline="")
 # Discount Labels
 canvas.create_text(140, 140, anchor="nw", text="Discount", font=("Arial", 32, "bold"))
 
-users_dir = os.path.join("backend", "users")
-base_file = os.path.join(users_dir, f"{username}_{password}.txt")
-student_file = os.path.join(users_dir, f"{username}_{password}_student.txt")
-senior_file = os.path.join(users_dir, f"{username}_{password}_senior.txt")
-pwd_file = os.path.join(users_dir, f"{username}_{password}_pwd.txt")
+# Correct absolute path for users directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+users_dir = os.path.normpath(os.path.join(script_dir, "..", "backend", "users"))
 
 # Detect current discount
-if os.path.exists(student_file):
-    current_discount = "Student"
-elif os.path.exists(senior_file):
-    current_discount = "Senior"
-elif os.path.exists(pwd_file):
-    current_discount = "PWD"
-else:
-    current_discount = "(none)"
+discount_file = None
+current_discount = "(none)"
+for discount_type in ["student", "senior", "pwd", "none"]:
+    possible_file = os.path.join(users_dir, f"{username}_{password}_{discount_type}.txt")
+    if os.path.exists(possible_file):
+        discount_file = possible_file
+        current_discount = discount_type.capitalize() if discount_type != "none" else "None"
+        break
 
 current_discount_text = canvas.create_text(140, 190, anchor="nw",
                                            text=f"Current discount: {current_discount}",
@@ -116,14 +114,13 @@ ttk.Radiobutton(root, text="", variable=discount_var, value="Student", style="Cu
 ttk.Radiobutton(root, text="", variable=discount_var, value="Senior", style="Custom.TRadiobutton").place(x=432, y=390, width=50, height=42)
 ttk.Radiobutton(root, text="", variable=discount_var, value="PWD", style="Custom.TRadiobutton").place(x=632, y=390, width=50, height=42)
 
-# Save to session.py
 def update_session(discount):
-    session_path = os.path.join("backend", "session.py")
+    session_path = os.path.normpath(os.path.join(script_dir, "..", "backend", "session.py"))
+    os.makedirs(os.path.dirname(session_path), exist_ok=True)
     with open(session_path, "w") as session_file:
         session_file.write(f'username = "{username}"\n')
         session_file.write(f'password = "{password}"\n')
-        if discount:
-            session_file.write(f'discount = "{discount.lower()}"\n')
+        session_file.write(f'discount = "{discount.lower()}"\n')
 
 def apply_discount():
     selected = discount_var.get()
@@ -131,19 +128,22 @@ def apply_discount():
         messagebox.showwarning("No Discount Selected", "Please select a discount to apply.")
         return
 
-    target_file = {
-        "Student": student_file,
-        "Senior": senior_file,
-        "PWD": pwd_file
-    }[selected]
+    new_discount = selected.lower()
+    target_file = os.path.join(users_dir, f"{username}_{password}_{new_discount}.txt")
 
-    # Remove existing discounts
-    for f in [student_file, senior_file, pwd_file]:
-        if f != target_file and os.path.exists(f):
-            os.rename(f, base_file)
+    # Rename existing file with any known discount to new one
+    renamed = False
+    for ext in ["student", "senior", "pwd", "none"]:
+        old_file = os.path.join(users_dir, f"{username}_{password}_{ext}.txt")
+        if os.path.exists(old_file) and old_file != target_file:
+            os.rename(old_file, target_file)
+            renamed = True
+            break
 
-    if os.path.exists(base_file):
-        os.rename(base_file, target_file)
+    if not renamed and not os.path.exists(target_file):
+        # If not renamed and new file doesn't exist, create it
+        with open(target_file, "w") as f:
+            f.write("")
 
     canvas.itemconfig(current_discount_text, text=f"Current discount: {selected}")
     update_session(discount=selected)
@@ -151,32 +151,25 @@ def apply_discount():
 
 def remove_discount():
     restored = False
-    for f in [student_file, senior_file, pwd_file]:
-        if os.path.exists(f):
-            # Extract base directory and filename components
-            base_dir = os.path.dirname(f)
-            base_filename = os.path.basename(f)[:-4]  # Remove .txt
-            parts = base_filename.split("_")
-
-            if len(parts) >= 2:
-                new_filename = f"{parts[0]}_{parts[1]}_None.txt"
-                new_file_path = os.path.join(base_dir, new_filename)
-
-                os.rename(f, new_file_path)
-                restored = True
+    none_path = os.path.join(users_dir, f"{username}_{password}_none.txt")
+    for ext in ["student", "senior", "pwd"]:
+        discount_path = os.path.join(users_dir, f"{username}_{password}_{ext}.txt")
+        if os.path.exists(discount_path):
+            os.rename(discount_path, none_path)
+            restored = True
+            break
 
     if restored:
         canvas.itemconfig(current_discount_text, text="Current discount: None")
-        update_session(discount="None")
+        update_session(discount="none")
         messagebox.showinfo("Removed", "Discount has been set to 'None'.")
     else:
         messagebox.showinfo("Info", "No discount is currently applied.")
 
-# Apply Button
+# Buttons
 tk.Button(root, text="Apply", bg="#A24141", fg="white", font=("Arial", 14),
           command=apply_discount).place(x=375, y=447, width=170, height=45)
 
-# Remove Discount Button
 tk.Button(root, text="Remove Discount", bg="#A24141", fg="white", font=("Arial", 12),
           command=remove_discount).place(x=375, y=494, width=170, height=35)
 

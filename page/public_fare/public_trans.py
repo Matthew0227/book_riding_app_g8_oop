@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import sys
 import os
 import subprocess
+from tkinter import messagebox
 
 # Vehicle passed as command-line argument
 vehicle_type = sys.argv[1] if len(sys.argv) > 1 else "UNKNOWN"
@@ -17,23 +18,46 @@ pictures_dir = os.path.join(script_dir, "..", "pictures")
 
 def go_back():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    correct_filename = "public_transportation.py" 
-    public_page = os.path.join(base_dir, "page", correct_filename)
-    print(f"Launching: {public_page}")
-    subprocess.Popen(["python", public_page])
-    root.destroy()
+    public_page = os.path.join(base_dir, "public_transportation.py")
 
-def show_image(image_name, container=None, side="top", width=600, height=800, padx=0):
-    """Safely load and display image"""
-    image_path = os.path.join(pictures_dir, image_name)
-    try:
-        img = Image.open(image_path).resize((width, height))
-        photo = ImageTk.PhotoImage(img)
-        label = tk.Label(container if container else root, image=photo)
-        label.image = photo  # keep reference
-        label.pack(side=side, padx=padx)
-    except FileNotFoundError:
-        tk.Label(container if container else root, text=f"Image not found: {image_name}", fg="red", font=("Arial", 12)).pack(pady=20)
+    if os.path.exists(public_page):
+        subprocess.Popen(["python", public_page])
+        root.destroy()
+    else:
+        messagebox.showerror("File Not Found", f"{public_page} not found.")
+
+def show_images_scrolled_together(image_list, width=760):
+    """Display multiple images stacked vertically in a single scrollable canvas"""
+    canvas_frame = tk.Frame(root)
+    canvas_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+    canvas = tk.Canvas(canvas_frame, width=width)
+    canvas.pack(side="left", fill="both", expand=True)
+
+    scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+    # Inner frame to hold all images
+    inner_frame = tk.Frame(canvas)
+    canvas.create_window((0, 0), window=inner_frame, anchor="nw")
+
+    for image_name in image_list:
+        image_path = os.path.join(pictures_dir, image_name)
+        try:
+            img = Image.open(image_path)
+            photo = ImageTk.PhotoImage(img)
+            label = tk.Label(inner_frame, image=photo)
+            label.image = photo  # keep reference
+            label.pack(pady=5)
+        except FileNotFoundError:
+            tk.Label(inner_frame, text=f"Image not found: {image_name}", fg="red", font=("Arial", 12)).pack(pady=20)
+
+def show_image(image_name, width=760, height=800):
+    """Single image scrollable (used by JEEP and BUS)"""
+    show_images_scrolled_together([image_name], width)
 
 def show_vehicle_info():
     if vehicle_type == "JEEP":
@@ -46,14 +70,7 @@ def show_vehicle_info():
 
     elif vehicle_type == "LRT":
         tk.Label(root, text="LRT Fare", font=("Arial", 18)).pack(pady=10)
-
-        # Frame for side-by-side images
-        image_frame = tk.Frame(root)
-        image_frame.pack(pady=10)
-
-        # Show both LRT1 and LRT2 side by side
-        show_image("LRT1.jpg", container=image_frame, side="left", width=800, height=800, padx=5)
-        show_image("LRT2.jpg", container=image_frame, side="left", width=800, height=800, padx=5)
+        show_images_scrolled_together(["LRT1.jpg", "LRT2.jpg"], width=760)
 
     else:
         tk.Label(root, text="Unknown Transport Type", font=("Arial", 18)).pack(pady=20)

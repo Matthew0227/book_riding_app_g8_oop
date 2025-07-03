@@ -1,0 +1,13 @@
+-------------------
+BOOKING HISTORY
+-------------------
+========================================
+Date/Time : 2025-07-04 05:35 AM
+Vehicle   : Mototaxi
+From      : MOA manila
+To        : Pureza station
+Distance  : 7.78 km
+Discount  : senior
+Fare      : ₱86
+========================================
+
