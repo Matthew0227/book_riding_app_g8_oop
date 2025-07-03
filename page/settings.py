@@ -107,17 +107,31 @@ def update_credentials(new_user=None, new_pass=None):
     global username, password
 
     user_dir = os.path.join(os.path.dirname(__file__), "..", "backend", "users")
-    old_file = os.path.join(user_dir, f"{username}_{password}.txt")
+
+    # Detect existing user file even if it has a discount suffix
+    old_prefix = f"{username}_{password}"
+    matched_files = [f for f in os.listdir(user_dir) if f.startswith(old_prefix + "_") or f == f"{old_prefix}.txt"]
+
+    if not matched_files:
+        messagebox.showerror("Error", "User file not found.")
+        return
+
+    old_file_name = matched_files[0]
+    old_file_path = os.path.join(user_dir, old_file_name)
+
+    # Extract existing discount (if any)
+    parts = old_file_name[:-4].split("_")  # remove .txt, then split
+    discount = parts[2] if len(parts) == 3 else None
+
     new_username = new_user if new_user else username
     new_password = new_pass if new_pass else password
-    new_file = os.path.join(user_dir, f"{new_username}_{new_password}.txt")
+    new_filename = f"{new_username}_{new_password}"
+    if discount:
+        new_filename += f"_{discount}"
+    new_file_path = os.path.join(user_dir, new_filename + ".txt")
 
     try:
-        if os.path.exists(old_file):
-            os.rename(old_file, new_file)
-        else:
-            messagebox.showerror("Error", "Original user file not found.")
-            return
+        os.rename(old_file_path, new_file_path)
 
         # Update session.py
         session_path = os.path.join(os.path.dirname(__file__), "..", "backend", "session.py")
