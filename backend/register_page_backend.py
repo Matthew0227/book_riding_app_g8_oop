@@ -1,6 +1,5 @@
 import os
 from tkinter import messagebox
-import main_dashboard
 import subprocess
 
 def letters_only(username):
@@ -24,7 +23,7 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
         return
 
     key = f"{username}_{password}"
-    file_path = f"./{key}.txt"
+    file_path = f"backend/users/{key}.txt"
 
     if os.path.exists(file_path):
         messagebox.showerror("Account Exists", "An account with this username and password already exists.")

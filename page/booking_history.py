@@ -57,7 +57,12 @@ def on_menu_select(option):
         subprocess.Popen(["python", "page/settings.py"])
         root.destroy()
     elif option == "Log-out":
+        try:
+            os.remove(os.path.join(os.path.dirname(__file__), "..", "backend", "session.py"))
+        except FileNotFoundError:
+            pass  # File is already gone or never created
         root.destroy()
+        return
 
 menu_button = tk.Menubutton(menubar_frame, text="MENU", font=("Arial", 24),
                             bg="#F1DADA", relief="flat")

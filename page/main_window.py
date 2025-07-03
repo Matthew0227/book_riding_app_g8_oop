@@ -3,12 +3,13 @@ from PIL import Image, ImageTk
 import subprocess
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from backend.session import username, password
 from tkinter import messagebox
 
-current_page = "Booking"
+# Allow import of session.py
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from backend.session import username, password
 
+current_page = "Booking"
 
 # Main Window Setup
 root = tk.Tk()
@@ -47,7 +48,7 @@ def on_menu_select(option):
     if option == "Booking":
         subprocess.Popen(["python", "page/main_window.py"])
         root.destroy()
-    if option == "Discounts":
+    elif option == "Discounts":
         subprocess.Popen(["python", "page/discounts.py"])
         root.destroy()
     elif option == "Booking History":
@@ -57,6 +58,10 @@ def on_menu_select(option):
         subprocess.Popen(["python", "page/settings.py"])
         root.destroy()
     elif option == "Log-out":
+        try:
+            os.remove(os.path.join(os.path.dirname(__file__), "..", "backend", "session.py"))
+        except FileNotFoundError:
+            pass  # File is already gone or never created
         root.destroy()
 
 menu_button = tk.Menubutton(menubar_frame, text="MENU", font=("Arial", 24),
@@ -71,61 +76,42 @@ menu.add_command(label="Log-out", command=lambda: on_menu_select("Log-out"))
 
 menu_button.config(menu=menu)
 
-# Delay placement until width is known
+# Position MENU button
 def update_menu_position():
     menu_width = menu_button.winfo_reqwidth()
     menu_button.place(x=916 - menu_width - 7, y=0, height=41)
 
 root.after(10, update_menu_position)
 
-# Delay placement until width is known
-def update_menu_position():
-    menu_width = menu_button.winfo_reqwidth()
-    menu_button.place(x=916 - menu_width - 7, y=0, height=41)
+# ============================
+# Transport Buttons
+# ============================
 
-root.after(10, update_menu_position)
+# PRIVATE TRANSPORTATION Button
+private_button = tk.Button(
+    root, text="PRIVATE\nTRANSPORTATION",
+    font=("Arial", 18, "bold"), fg="black", bg="#C16060",
+    activebackground="#A05050", width=21, height=3,
+    command=lambda: (
+        root.destroy(),
+        subprocess.Popen(["python", "page/private_transportation.py"])
+    )
+)
+private_button.place(x=106, y=235, width=250, height=89)
 
-# Create PRIVATE TRANSPORTATION with group tag
-private_rect = canvas.create_rectangle(106, 235, 106 + 250, 235 + 89, fill="#C16060", outline="", tags=("private_transport",))
-private_text = canvas.create_text(106 + 125, 235 + 44.5, text="PRIVATE\nTRANSPORTATION",
-                                  font=("Arial", 18, "bold"), fill="black", anchor="center", tags=("private_transport",))
+# PUBLIC TRANSPORTATION Button
+public_button = tk.Button(
+    root, text="PUBLIC\nTRANSPORTATION",
+    font=("Arial", 18, "bold"), fg="black", bg="#C16060",
+    activebackground="#A05050", width=21, height=3,
+    command=lambda: (
+        root.destroy(),
+        subprocess.Popen(["python", "page/public_transportation.py"])
+    )
+)
+public_button.place(x=493, y=235, width=250, height=89)
 
-# Event handlers
-def handle_private_click(event=None):
-    print("PRIVATE TRANSPORTATION clicked!")
-    root.destroy()
-    subprocess.Popen(["python", "page/private_transportation.py"])
-
-
-def handle_private_hover(event=None):
-    canvas.itemconfig(private_rect, outline="black", width=2)
-
-def handle_private_leave(event=None):
-    canvas.itemconfig(private_rect, outline="", width=1)
-
-# Bind all events to the tag "private_transport"
-canvas.tag_bind("private_transport", "<Button-1>", handle_private_click)
-canvas.tag_bind("private_transport", "<Enter>", handle_private_hover)
-canvas.tag_bind("private_transport", "<Leave>", handle_private_leave)
-
-public_rect = canvas.create_rectangle(493, 235, 493 + 250, 235 + 89, fill="#C16060", outline="", tags=("public_transport",))
-public_text = canvas.create_text(493 + 125, 235 + 44.5, text="PUBLIC\nTRANSPORTATION",
-                                 font=("Arial", 18, "bold"), fill="black", anchor="center", tags=("public_transport",))
-
-def handle_public_click(event=None):
-    print("PUBLIC TRANSPORTATION clicked!")
-    root.destroy()
-    subprocess.Popen(["python", "page/public_transportation.py"])
-
-def handle_public_hover(event=None):
-    canvas.itemconfig(public_rect, outline="black", width=2)
-
-def handle_public_leave(event=None):
-    canvas.itemconfig(public_rect, outline="", width=1)
-
-canvas.tag_bind("public_transport", "<Button-1>", handle_public_click)
-canvas.tag_bind("public_transport", "<Enter>", handle_public_hover)
-canvas.tag_bind("public_transport", "<Leave>", handle_public_leave)
-
-# Mainloop
+# ============================
+# Start GUI
+# ============================
 root.mainloop()

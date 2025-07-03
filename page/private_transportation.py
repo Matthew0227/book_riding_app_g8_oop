@@ -3,12 +3,12 @@ from PIL import Image, ImageTk
 import subprocess
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from backend.session import username, password
 from tkinter import messagebox
 
-current_page = "Private"
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from backend.session import username, password
 
+current_page = "Private"
 
 # Main Window Setup
 root = tk.Tk()
@@ -47,7 +47,7 @@ def on_menu_select(option):
     if option == "Booking":
         subprocess.Popen(["python", "page/main_window.py"])
         root.destroy()
-    if option == "Discounts":
+    elif option == "Discounts":
         subprocess.Popen(["python", "page/discounts.py"])
         root.destroy()
     elif option == "Booking History":
@@ -57,6 +57,10 @@ def on_menu_select(option):
         subprocess.Popen(["python", "page/settings.py"])
         root.destroy()
     elif option == "Log-out":
+        try:
+            os.remove(os.path.join(os.path.dirname(__file__), "..", "backend", "session.py"))
+        except FileNotFoundError:
+            pass
         root.destroy()
 
 menu_button = tk.Menubutton(menubar_frame, text="MENU", font=("Arial", 24),
@@ -71,7 +75,6 @@ menu.add_command(label="Log-out", command=lambda: on_menu_select("Log-out"))
 
 menu_button.config(menu=menu)
 
-# Delay placement until width is known
 def update_menu_position():
     menu_width = menu_button.winfo_reqwidth()
     menu_button.place(x=916 - menu_width - 7, y=0, height=41)
@@ -79,30 +82,43 @@ def update_menu_position():
 root.after(10, update_menu_position)
 
 # ============================
-# Transport Images
+# Load and Display Transport Images
 # ============================
 
-# Load images and resize to 186x186
 motorcycle_img = ImageTk.PhotoImage(Image.open("pictures/mototaxi.webp").resize((186, 186)))
 taxicab_img = ImageTk.PhotoImage(Image.open("pictures/car.webp").resize((186, 186)))
 suv_img = ImageTk.PhotoImage(Image.open("pictures/suv.png").resize((186, 186)))
 
-# Place images
 canvas.create_image(49, 90, anchor="nw", image=motorcycle_img)
 canvas.create_image(354, 90, anchor="nw", image=taxicab_img)
 canvas.create_image(666, 90, anchor="nw", image=suv_img)
 
 # ============================
-# Transportation Option Rectangles + Labels
+# Transport Buttons
 # ============================
 
-canvas.create_rectangle(16, 286, 266, 375, fill="#C16060", outline="")
-canvas.create_text(141, 330, text="MOTORCYCLE", font=("Arial", 24, "bold"), fill="black", anchor="center")
+def handle_motorcycle():
+    messagebox.showinfo("Selection", "MOTORCYCLE selected.")
 
-canvas.create_rectangle(325, 286, 575, 375, fill="#C16060", outline="")
-canvas.create_text(450, 330, text="TAXICAB\n(4-seater)", font=("Arial", 20, "bold"), fill="black", anchor="center")
+def handle_taxicab():
+    messagebox.showinfo("Selection", "TAXICAB selected.")
 
-canvas.create_rectangle(634, 286, 884, 375, fill="#C16060", outline="")
-canvas.create_text(759, 330, text="SUV\n(6-seater)", font=("Arial", 20, "bold"), fill="black", anchor="center")
+def handle_suv():
+    messagebox.showinfo("Selection", "SUV selected.")
 
+motorcycle_btn = tk.Button(root, text="MOTORCYCLE", font=("Arial", 20, "bold"),
+                           bg="#C16060", fg="black", command=handle_motorcycle)
+motorcycle_btn.place(x=16, y=286, width=250, height=89)
+
+taxicab_btn = tk.Button(root, text="TAXICAB\n(4-seater)", font=("Arial", 18, "bold"),
+                        bg="#C16060", fg="black", command=handle_taxicab)
+taxicab_btn.place(x=325, y=286, width=250, height=89)
+
+suv_btn = tk.Button(root, text="SUV\n(6-seater)", font=("Arial", 18, "bold"),
+                    bg="#C16060", fg="black", command=handle_suv)
+suv_btn.place(x=634, y=286, width=250, height=89)
+
+# ============================
+# Mainloop
+# ============================
 root.mainloop()

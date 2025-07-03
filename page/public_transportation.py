@@ -3,12 +3,12 @@ from PIL import Image, ImageTk
 import subprocess
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from backend.session import username, password
 from tkinter import messagebox
 
-current_page = "Public"
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from backend.session import username, password
 
+current_page = "Public"
 
 # Main Window Setup
 root = tk.Tk()
@@ -47,7 +47,7 @@ def on_menu_select(option):
     if option == "Booking":
         subprocess.Popen(["python", "page/main_window.py"])
         root.destroy()
-    if option == "Discounts":
+    elif option == "Discounts":
         subprocess.Popen(["python", "page/discounts.py"])
         root.destroy()
     elif option == "Booking History":
@@ -57,6 +57,10 @@ def on_menu_select(option):
         subprocess.Popen(["python", "page/settings.py"])
         root.destroy()
     elif option == "Log-out":
+        try:
+            os.remove(os.path.join(os.path.dirname(__file__), "..", "backend", "session.py"))
+        except FileNotFoundError:
+            pass
         root.destroy()
 
 menu_button = tk.Menubutton(menubar_frame, text="MENU", font=("Arial", 24),
@@ -77,31 +81,45 @@ def update_menu_position():
     menu_button.place(x=916 - menu_width - 7, y=0, height=41)
 
 root.after(10, update_menu_position)
+
 # ============================
 # Transport Images
 # ============================
 
-# Load images and resize to 186x186
 jeep_img = ImageTk.PhotoImage(Image.open("pictures/jeep.png").resize((186, 186)))
 bus_img = ImageTk.PhotoImage(Image.open("pictures/bus.png").resize((186, 186)))
 lrt_img = ImageTk.PhotoImage(Image.open("pictures/public.webp").resize((186, 186)))
 
-# Place images
 canvas.create_image(49, 90, anchor="nw", image=jeep_img)
 canvas.create_image(354, 90, anchor="nw", image=bus_img)
 canvas.create_image(666, 90, anchor="nw", image=lrt_img)
 
 # ============================
-# Transportation
+# Transport Buttons
 # ============================
 
-canvas.create_rectangle(16, 286, 266, 375, fill="#C16060", outline="")
-canvas.create_text(141, 330, text="JEEP", font=("Arial", 24, "bold"), fill="black", anchor="center")
+def handle_jeep():
+    messagebox.showinfo("Selection", "JEEP selected.")
 
-canvas.create_rectangle(325, 286, 575, 375, fill="#C16060", outline="")
-canvas.create_text(450, 330, text="BUS", font=("Arial", 20, "bold"), fill="black", anchor="center")
+def handle_bus():
+    messagebox.showinfo("Selection", "BUS selected.")
 
-canvas.create_rectangle(634, 286, 884, 375, fill="#C16060", outline="")
-canvas.create_text(759, 330, text="LRT", font=("Arial", 20, "bold"), fill="black", anchor="center")
+def handle_lrt():
+    messagebox.showinfo("Selection", "LRT selected.")
 
+jeep_btn = tk.Button(root, text="JEEP", font=("Arial", 24, "bold"),
+                     bg="#C16060", fg="black", command=handle_jeep)
+jeep_btn.place(x=16, y=286, width=250, height=89)
+
+bus_btn = tk.Button(root, text="BUS", font=("Arial", 20, "bold"),
+                    bg="#C16060", fg="black", command=handle_bus)
+bus_btn.place(x=325, y=286, width=250, height=89)
+
+lrt_btn = tk.Button(root, text="LRT", font=("Arial", 20, "bold"),
+                    bg="#C16060", fg="black", command=handle_lrt)
+lrt_btn.place(x=634, y=286, width=250, height=89)
+
+# ============================
+# Mainloop
+# ============================
 root.mainloop()

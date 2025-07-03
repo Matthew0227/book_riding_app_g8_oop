@@ -18,7 +18,7 @@ def handle_login(username_entry, password_entry, root_window):
         return
 
     key = f"{username}_{password}"
-    file_path = f"./{key}.txt"
+    file_path = f"backend/users/{key}.txt"
 
     # Check if user file exists (account exists)
     if os.path.exists(file_path):
