@@ -98,13 +98,14 @@ canvas.create_image(666, 90, anchor="nw", image=suv_img)
 # ============================
 
 def handle_motorcycle():
-    messagebox.showinfo("Selection", "MOTORCYCLE selected.")
+    subprocess.Popen(["python", "page/private_booking/mototaxi_booking.py"])
 
 def handle_taxicab():
-    messagebox.showinfo("Selection", "TAXICAB selected.")
+    subprocess.Popen(["python", "page/private_booking/suv_booking.py"])
 
 def handle_suv():
-    messagebox.showinfo("Selection", "SUV selected.")
+    subprocess.Popen(["python", "page/private_booking/Taxicab_booking.py"])
+
 
 motorcycle_btn = tk.Button(root, text="MOTORCYCLE", font=("Arial", 20, "bold"),
                            bg="#C16060", fg="black", command=handle_motorcycle)

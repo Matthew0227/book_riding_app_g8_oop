@@ -1,0 +1,22 @@
+
+========================================
+Date/Time : 2025-07-04 04:14 AM
+Vehicle   : Mototaxi
+From      : Luckygold ortigas pasig
+To        : SM megamall
+Distance  : 4.14 km
+Discount  : student
+Fare      : ₱57
+========================================
+
+
+========================================
+Date/Time : 2025-07-04 04:15 AM
+Vehicle   : Mototaxi
+From      : SM Megamall
+To        : MOA Manila
+Distance  : 9.79 km
+Discount  : student
+Fare      : ₱102
+========================================
+

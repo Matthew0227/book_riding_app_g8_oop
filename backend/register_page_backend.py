@@ -42,7 +42,7 @@ def handle_registration(username_entry, password_entry, confirm_entry, root_wind
     with open("backend/session.py", "w") as session_file:
             session_file.write(f'username = "{username}"\n')
             session_file.write(f'password = "{password}"\n')
-            session_file.write(f'Discount = "None"\n')
+            session_file.write(f'discount = "none"\n')
 
         # Open dashboard and close login window
     subprocess.Popen(["python", "page/main_window.py"])

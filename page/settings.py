@@ -6,7 +6,7 @@ import os
 from tkinter import messagebox
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from backend.session import username, password
+from backend.session import username, password, discount
 
 current_page = "Settings"
 
@@ -108,9 +108,12 @@ def update_credentials(new_user=None, new_pass=None):
 
     user_dir = os.path.join(os.path.dirname(__file__), "..", "backend", "users")
 
-    # Detect existing user file even if it has a discount suffix
+    # Find the current user's file (with or without discount)
     old_prefix = f"{username}_{password}"
-    matched_files = [f for f in os.listdir(user_dir) if f.startswith(old_prefix + "_") or f == f"{old_prefix}.txt"]
+    matched_files = [
+        f for f in os.listdir(user_dir)
+        if f.startswith(old_prefix + "_") or f == f"{old_prefix}.txt"
+    ]
 
     if not matched_files:
         messagebox.showerror("Error", "User file not found.")
@@ -119,16 +122,25 @@ def update_credentials(new_user=None, new_pass=None):
     old_file_name = matched_files[0]
     old_file_path = os.path.join(user_dir, old_file_name)
 
-    # Extract existing discount (if any)
-    parts = old_file_name[:-4].split("_")  # remove .txt, then split
-    discount = parts[2] if len(parts) == 3 else None
+    # Safely extract discount (last part if 3 or more segments)
+    parts = old_file_name[:-4].split("_")  # remove .txt and split
+    discount = parts[-1] if len(parts) >= 3 else None
 
+    # Use new or existing credentials
     new_username = new_user if new_user else username
     new_password = new_pass if new_pass else password
+
+    # Build new filename
     new_filename = f"{new_username}_{new_password}"
-    if discount:
+    if discount and discount != new_password:  # Prevent false match if password has underscore
         new_filename += f"_{discount}"
+
     new_file_path = os.path.join(user_dir, new_filename + ".txt")
+
+    # Prevent overwriting if the new file already exists
+    if os.path.exists(new_file_path) and old_file_path != new_file_path:
+        messagebox.showerror("Error", "A user with the new credentials already exists.")
+        return
 
     try:
         os.rename(old_file_path, new_file_path)
@@ -138,11 +150,13 @@ def update_credentials(new_user=None, new_pass=None):
         with open(session_path, "w") as f:
             f.write(f'username = "{new_username}"\n')
             f.write(f'password = "{new_password}"\n')
+            f.write(f'discount = "{discount}"\n')
 
-        # Update global values
-        username_text.set(new_username)
+        # Update current state and welcome message
+        welcome_text.set(f"Welcome!, {new_username}")
         username = new_username
         password = new_password
+
         messagebox.showinfo("Success", "Credentials updated successfully.")
 
     except Exception as e:

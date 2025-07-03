@@ -1,0 +1,3 @@
+Mototaxi | From: Luckygold ortigas pasig | To: Pureza station | Discount: student | Distance: 9.76 km | Fare: ₱102
+Mototaxi | From: Pureza station | To: Moa manila | Discount: student | Distance: 7.78 km | Fare: ₱86
+Mototaxi | From: Pureza station | To: MOA Manila | Discount: student | Distance: 7.78 km | Fare: ₱86

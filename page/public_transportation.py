@@ -85,7 +85,6 @@ root.after(10, update_menu_position)
 # ============================
 # Transport Images
 # ============================
-
 jeep_img = ImageTk.PhotoImage(Image.open("pictures/jeep.png").resize((186, 186)))
 bus_img = ImageTk.PhotoImage(Image.open("pictures/bus.png").resize((186, 186)))
 lrt_img = ImageTk.PhotoImage(Image.open("pictures/public.webp").resize((186, 186)))
@@ -98,26 +97,22 @@ canvas.create_image(666, 90, anchor="nw", image=lrt_img)
 # Transport Buttons
 # ============================
 
-def handle_jeep():
-    messagebox.showinfo("Selection", "JEEP selected.")
+def open_vehicle_page(vehicle_name):
+    booking_path = os.path.join("page", "public_fare", "public_trans.py")
+    subprocess.Popen(["python", booking_path, vehicle_name])
+    root.destroy()
 
-def handle_bus():
-    messagebox.showinfo("Selection", "BUS selected.")
+tk.Button(root, text="JEEP", font=("Arial", 24, "bold"),
+          bg="#C16060", fg="black", command=lambda: open_vehicle_page("JEEP")
+).place(x=16, y=286, width=250, height=89)
 
-def handle_lrt():
-    messagebox.showinfo("Selection", "LRT selected.")
+tk.Button(root, text="BUS", font=("Arial", 20, "bold"),
+          bg="#C16060", fg="black", command=lambda: open_vehicle_page("BUS")
+).place(x=325, y=286, width=250, height=89)
 
-jeep_btn = tk.Button(root, text="JEEP", font=("Arial", 24, "bold"),
-                     bg="#C16060", fg="black", command=handle_jeep)
-jeep_btn.place(x=16, y=286, width=250, height=89)
-
-bus_btn = tk.Button(root, text="BUS", font=("Arial", 20, "bold"),
-                    bg="#C16060", fg="black", command=handle_bus)
-bus_btn.place(x=325, y=286, width=250, height=89)
-
-lrt_btn = tk.Button(root, text="LRT", font=("Arial", 20, "bold"),
-                    bg="#C16060", fg="black", command=handle_lrt)
-lrt_btn.place(x=634, y=286, width=250, height=89)
+tk.Button(root, text="LRT", font=("Arial", 20, "bold"),
+          bg="#C16060", fg="black", command=lambda: open_vehicle_page("LRT")
+).place(x=634, y=286, width=250, height=89)
 
 # ============================
 # Mainloop

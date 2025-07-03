@@ -153,12 +153,22 @@ def remove_discount():
     restored = False
     for f in [student_file, senior_file, pwd_file]:
         if os.path.exists(f):
-            os.rename(f, base_file)
-            restored = True
+            # Extract base directory and filename components
+            base_dir = os.path.dirname(f)
+            base_filename = os.path.basename(f)[:-4]  # Remove .txt
+            parts = base_filename.split("_")
+
+            if len(parts) >= 2:
+                new_filename = f"{parts[0]}_{parts[1]}_None.txt"
+                new_file_path = os.path.join(base_dir, new_filename)
+
+                os.rename(f, new_file_path)
+                restored = True
+
     if restored:
-        canvas.itemconfig(current_discount_text, text="Current discount: (none)")
-        update_session(discount=None)
-        messagebox.showinfo("Removed", "Discount has been removed.")
+        canvas.itemconfig(current_discount_text, text="Current discount: None")
+        update_session(discount="None")
+        messagebox.showinfo("Removed", "Discount has been set to 'None'.")
     else:
         messagebox.showinfo("Info", "No discount is currently applied.")
 

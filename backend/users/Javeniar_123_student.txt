@@ -1,3 +1,0 @@
-Date: 2025-07-01 | Time: 09:30 AM | Pickup: Pureza | Destination: SM Manila | Fare: ₱80
-Date: 2025-07-02 | Time: 02:00 PM | Pickup: Cubao | Destination: Recto | Fare: ₱100
-Date: 2025-07-03 | Time: 11:15 AM | Pickup: España | Destination: Monumento | Fare: ₱120

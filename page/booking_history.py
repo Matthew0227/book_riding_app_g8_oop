@@ -14,7 +14,7 @@ current_page = "Booking History"
 def get_user_file():
     user_dir = os.path.join(os.path.dirname(__file__), "..", "backend", "users")
     # Try plain username_password
-    base_filename = f"{username}_{password}.txt"
+    base_filename = f"{username}_{password}_None.txt"
     base_path = os.path.join(user_dir, base_filename)
 
     if os.path.exists(base_path):
