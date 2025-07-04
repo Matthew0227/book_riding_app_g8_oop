@@ -5,7 +5,7 @@ import backend.login_page_backend
 
 # Main Window Setup
 root = tk.Tk()
-root.title("Ride Booking System")
+root.title("BYAHE")
 root.geometry("916x571")
 root.resizable(False, False)
 
@@ -22,7 +22,7 @@ canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 canvas.create_rectangle(0, 0, 365, 571, fill="#E1DEDE", outline="")
 
 # Header Text
-book_label = tk.Label(root, text="BOOK RIDING", font=("Arial", 32), bg="#E1DEDE", fg="#000000")
+book_label = tk.Label(root, text="BYAHE BOOK RIDING", font=("Arial", 32), bg="#E1DEDE", fg="#000000")
 canvas.create_window(182, 40, window=book_label, width=339, height=56)
 
 # Login Section
