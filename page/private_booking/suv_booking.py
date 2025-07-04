@@ -148,11 +148,38 @@ def book_ride():
     fare_label.config(text=f"Estimated Fare: ₱{fare}")
 
 def cancel_last_booking():
-    if bookings:
-        bookings.pop()
-        messagebox.showinfo("Cancelled", "The last booking has been cancelled.")
-    else:
+    if not bookings:
         messagebox.showinfo("No Bookings", "No bookings to cancel.")
+        return
+
+    # Remove from in-memory list
+    bookings.pop()
+
+    # Remove the last booking from the user’s file
+    bookings_file = os.path.join(os.path.dirname(__file__), "..", "..", "backend", "users", f"{username}_{password}_{discount}.txt")
+    try:
+        with open(bookings_file, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+
+        # Find all indices where booking entries start and end
+        indices = [i for i, line in enumerate(lines) if line.strip() == "========================================"]
+
+        if len(indices) >= 2:
+            start_idx = indices[-2]
+            end_idx = indices[-1]
+
+            # Remove the last booking block
+            del lines[start_idx:end_idx + 1]
+
+            with open(bookings_file, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+
+            messagebox.showinfo("Cancelled", "The last booking has been cancelled.")
+        else:
+            messagebox.showinfo("Error", "Could not find last booking block to cancel.")
+
+    except Exception as e:
+        messagebox.showwarning("File Error", f"Error updating booking file:\n{e}")
 
 # === BUTTONS ===
 tk.Button(booking_frame, text="Calculate Fare", font=("Arial", 12), bg="#FFA500", fg="white",
