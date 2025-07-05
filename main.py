@@ -1,6 +1,14 @@
+import os
+import subprocess
+
+# Redirect to main_window.py if session.py exists
+session_path = os.path.join("backend", "session.py")
+if os.path.exists(session_path):
+    subprocess.Popen(["python", os.path.join("page", "main_window.py")])
+    exit()
+
 import tkinter as tk
 from PIL import Image, ImageTk
-import subprocess
 import backend.login_page_backend
 
 # Main Window Setup
@@ -22,7 +30,7 @@ canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 canvas.create_rectangle(0, 0, 365, 571, fill="#E1DEDE", outline="")
 
 # Header Text
-book_label = tk.Label(root, text="BYAHE BOOK RIDING", font=("Arial", 32), bg="#E1DEDE", fg="#000000")
+book_label = tk.Label(root, text="BYAHE BOOK RIDING", font=("Arial", 24), bg="#E1DEDE", fg="#000000")
 canvas.create_window(182, 40, window=book_label, width=339, height=56)
 
 # Login Section

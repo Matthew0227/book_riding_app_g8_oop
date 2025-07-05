@@ -13,7 +13,7 @@ current_page = "Booking"
 
 # Main Window Setup
 root = tk.Tk()
-root.title("Ride Booking System")
+root.title("BYAHE Ride Booking System")
 root.geometry("916x571")
 root.resizable(False, False)
 

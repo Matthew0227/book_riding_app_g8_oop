@@ -153,9 +153,8 @@ def cancel_last_booking():
         return
 
     # Remove from in-memory list
-    bookings.pop()
+    last_booking = bookings.pop()
 
-    # Remove the last booking from the user’s file
     bookings_file = os.path.join(os.path.dirname(__file__), "..", "..", "backend", "users", f"{username}_{password}_{discount}.txt")
     try:
         with open(bookings_file, "r", encoding="utf-8") as f:
@@ -168,15 +167,20 @@ def cancel_last_booking():
             start_idx = indices[-2]
             end_idx = indices[-1]
 
-            # Remove the last booking block
-            del lines[start_idx:end_idx + 1]
+            # Check if already cancelled
+            if any("Status   : Cancelled" in line for line in lines[start_idx:end_idx]):
+                messagebox.showinfo("Already Cancelled", "The last booking has already been cancelled.")
+                return
+
+            # Insert "Status : Cancelled" before the last delimiter
+            lines.insert(end_idx, "Status   : Cancelled\n")
 
             with open(bookings_file, "w", encoding="utf-8") as f:
                 f.writelines(lines)
 
-            messagebox.showinfo("Cancelled", "The last booking has been cancelled.")
+            messagebox.showinfo("Cancelled", "The last booking has been marked as cancelled.")
         else:
-            messagebox.showinfo("Error", "Could not find last booking block to cancel.")
+            messagebox.showinfo("Error", "Could not find the last booking block to cancel.")
 
     except Exception as e:
         messagebox.showwarning("File Error", f"Error updating booking file:\n{e}")

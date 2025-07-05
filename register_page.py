@@ -23,7 +23,7 @@ canvas.create_image(0, 0, image=bg_photo, anchor="nw")
 canvas.create_rectangle(0, 0, 365, 571, fill="#E1DEDE", outline="")
 
 # Header Text
-book_label = tk.Label(root, text="BYAHE BOOK RIDING", font=("Arial", 32), bg="#E1DEDE", fg="#000000")
+book_label = tk.Label(root, text="BYAHE BOOK RIDING", font=("Arial", 24), bg="#E1DEDE", fg="#000000")
 canvas.create_window(182, 40, window=book_label, width=339, height=56)
 
 # NEW USERNAME Label
@@ -74,7 +74,7 @@ canvas.create_window(320, 365, window=toggle_btn, width=40, height=43)
 # Create Account Link
 def open_register():
     root.destroy()
-    subprocess.Popen(["python", "login_page.py"])
+    subprocess.Popen(["python", "main.py"])
 
 login_page_label = tk.Label(root, text="Already have an account?", font=("Arial", 10), fg="#A90000", bg="#E1DEDE", cursor="hand2")
 login_page_label.bind("<Button-1>", lambda e: open_register())

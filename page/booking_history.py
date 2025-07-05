@@ -8,7 +8,7 @@ from tkinter import messagebox
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from backend.session import username, password, discount
 
-current_page = "Booking History"
+current_page = "BYAHE Ride Booking History"
 
 # === Helper to locate the correct booking history file ===
 def get_user_file():
@@ -30,7 +30,7 @@ def get_user_file():
 
 # === Main Window Setup ===
 root = tk.Tk()
-root.title("Ride Booking System")
+root.title("BYAHE Booking System")
 root.geometry("916x571")
 root.resizable(False, False)
 
